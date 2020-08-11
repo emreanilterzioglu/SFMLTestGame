@@ -1,6 +1,7 @@
 #include "main.hpp"
 #include "cloud.hpp"
 #include "player.hpp"
+#include "hud.hpp"
 
 bool paused = true;
 
@@ -18,30 +19,41 @@ int main()
     spriteBackground.setPosition(0,0);
 
     //Player Initialize
-    Player player;
-    player.setPosition(30,170);
-    sf::Texture texturePlayer;
-    texturePlayer.loadFromFile("images/knight.png");   
-    player.setTexture(texturePlayer);
+    sf::Texture playerTexture;
+    playerTexture.loadFromFile("images/tux_from_linux.png");
+    Player player(&playerTexture,sf::Vector2u(3,9),0.3f,100.0f);
 
     //Cloud Initialize
-    Cloud cloud1;
-    Cloud cloud2;
-    Cloud cloud3;
+    Cloud clouds[CLOUD_COUNT];
 
     sf::Texture textureCloud;
-    textureCloud.loadFromFile("images/cloud.png");   
-    cloud1.setTexture(textureCloud);
-    cloud2.setTexture(textureCloud);
-    cloud3.setTexture(textureCloud);
+    textureCloud.loadFromFile("images/cloud.png");  
+    for(int i=0; i<CLOUD_COUNT; i++){
+        clouds[i].setTexture(textureCloud);
+    }
+
+    HUD pauseText("           Paused\n Press P for Unpause\n");
+    pauseText.setScale(1.f, 1.f);
+    pauseText.setPosition(200.f, 50.f); 
+
+    HUD scoreText("0\n");
+    scoreText.setScale(1.f, 1.f);
+    scoreText.setPosition(10.f, 10.f); 
+
+
 
     int32_t debounceCounter = 0;
+
+    float deltaTime = 0;
+    sf::Clock clock; 
 
     while (window.isOpen())
     {
         if(debounceCounter < -2000000000) debounceCounter = -1; //DebounceCounter overflow check.
         debounceCounter--;
         
+        deltaTime = clock.restart().asSeconds();
+
         sf::Event event;
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
@@ -60,31 +72,15 @@ int main()
         }
 
         if(!paused){
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-            {  
-                player.move(0.1f,0.f);
+
+            for(int i=0; i<CLOUD_COUNT; i++){
+                clouds[i].cloudPosGen();
+                clouds[i].setPosition(clouds[i].xPos,clouds[i].yPos);
             }
 
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-            {  
-                player.move(-0.1f,0.f);
-            }
-
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || (player.playerGroundLevel != 0))
-            {
-                player.jumpEvent();
-            }
-        /* if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-            {  
-                shapePlayer.move(0.f,0.1f);
-            }*/
-
-            cloud1.cloudPosGen();
-            cloud2.cloudPosGen();
-            cloud3.cloudPosGen();
-            cloud1.setPosition(cloud1.xPos,cloud1.yPos);
-            cloud2.setPosition(cloud2.xPos,cloud2.yPos);
-            cloud3.setPosition(cloud3.xPos,cloud3.yPos);
+            scoreText.setString(std::to_string(player.score));
+            
+            player.update(deltaTime);
 
         }
         
@@ -96,13 +92,17 @@ int main()
                 window.close();
         }
 
+
         window.clear();
         window.draw(spriteBackground);
-        window.draw(player);
-        window.draw(cloud1);
-        window.draw(cloud2);
-        window.draw(cloud3);
 
+        for(int i=0; i<CLOUD_COUNT; i++){
+            window.draw(clouds[i]);
+        }
+
+        window.draw(scoreText);
+        player.draw(&window);
+        if(paused) window.draw(pauseText);
 
         window.display();
     }

@@ -3,6 +3,8 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 
+#define CLOUD_COUNT 10
+
 class Cloud : public sf::Sprite{
 
 public :
