@@ -19,7 +19,8 @@ public:
     void jumpEvent();
     void update(float deltaTime);
     void draw(sf::RenderWindow* window);
-
+    sf::Vector2f getPosition(){return body.getPosition();}
+    
 public :
 
     int direction;

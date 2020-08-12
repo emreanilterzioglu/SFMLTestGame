@@ -6,11 +6,12 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
     this->speed = speed;
     rowSelection = 0;
     faceRight = true;
-        
-    body.setPosition(30,150);
+    
     body.setTexture(*texture);
     moveAnimation.update(rowSelection, switchTime, true);
     body.setTextureRect(moveAnimation.uvRect);
+    body.setOrigin((moveAnimation.uvRect.width/2.0f),(moveAnimation.uvRect.height/2.0f));
+    body.setPosition(700,700);
 
 }
 
