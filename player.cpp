@@ -60,7 +60,7 @@ void Player::update(float deltaTime){
     moveAnimation.update(rowSelection, deltaTime, faceRight);
     body.setTextureRect(moveAnimation.uvRect);
     body.move(movement);
-    std::cout << "Movement " << (float)movement.x << std::endl;
+    //std::cout << "Movement " << (float)movement.x << std::endl;
 }
 
 void Player::jumpEvent(){

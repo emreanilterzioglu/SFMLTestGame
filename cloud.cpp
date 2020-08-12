@@ -1,9 +1,10 @@
 #include "cloud.hpp"
 
-Cloud::Cloud(){
+Cloud::Cloud(int mapwidth){
 
-    xPos = rand()%500;
-    yPos = rand()%50;
+    activeWidth = mapwidth / 2;
+    xPos = (rand()%mapwidth) - activeWidth;
+    yPos = (rand()%100)+150;
     direction = rand()%2;
     speed = (float)(rand()%5) / 100.0f;
     //std::cout << "Xpos " << xPos << "Ypos " << yPos << "moveDir " << direction <<  "Speed " << speed << std::endl;
@@ -12,11 +13,11 @@ Cloud::Cloud(){
 
 void Cloud::cloudPosGen(){
 
-        if(xPos >= 600){
+        if(xPos >= activeWidth){
             direction = 0;
             speed = (float)(rand()%5) / 100.0f;
         }
-        else if(xPos <= 50){
+        else if(xPos <= -activeWidth){
             direction = 1;
             speed = (float)(rand()%5) / 100.0f;
         }
