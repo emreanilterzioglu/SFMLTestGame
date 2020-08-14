@@ -4,19 +4,26 @@
 #include <time.h>       /* time */
 
 
-class Cloud : public sf::Sprite{
+class Cloud {
 
 public :
-    float xPos;
-    float yPos;
-    float speed;
-    int direction;
-
-    Cloud(int mapwidth);
-    void cloudPosGen();
+    Cloud(int _mapwidth,int _cloudCount);
+    void update(float deltaTime);
+    void draw(sf::RenderWindow* window);
+    void init();
 
 private:
+
+public :
+
+private:
+    sf::Texture textureCloud;
     int activeWidth = 0;
+    int mapWidth = 0;
+    int cloudCount = 0;
+    std::vector <sf::Sprite> clouds;
+    std::vector <int> direction;
+    std::vector <float> speed;
 
 
 };

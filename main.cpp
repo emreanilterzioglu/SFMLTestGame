@@ -1,18 +1,15 @@
 #include "main.hpp"
-#include "cloud.hpp"
 #include "player.hpp"
 #include "hud.hpp"
+#include "scene.hpp"
 
 bool paused = true;
 
 static const float WINDOW_WIDTH = 1280.0f;
 static const float WINDOW_HEIGHT = 768.0f;
-static const float MAP_WIDTH = 10000.0f;
-static const float MAP_HEIGHT = 768.0f;
 
 static const float PLAYER_SPEED = 100.0f;
 static const float PLAYER_ANIMATION_TIME = 0.1f; //0.1 = 10fps
-static const int CLOUD_COUNT = 100;
 
 
 void resizeView(sf::RenderWindow& window, sf::View& view){
@@ -30,31 +27,15 @@ int main()
     sf::View view(sf::Vector2f(0.0f,0.0f),sf::Vector2f(WINDOW_WIDTH/2.0f,WINDOW_HEIGHT/2.0f));
     resizeView(window,view);
 
-    sf::Texture textureBackground;
-    textureBackground.setRepeated(true);
-    textureBackground.loadFromFile("images/background.png");
-    sf::Sprite spriteBackground;
-    spriteBackground.setTexture(textureBackground);
-    //spriteBackground.setOrigin(textureBackground.getSize().x/2.0f,textureBackground.getSize().y/2.0f);
-    spriteBackground.setOrigin(0,0);
-    spriteBackground.setPosition(-(MAP_WIDTH/2.0f),0.f);
-    spriteBackground.setTextureRect(sf::IntRect(sf::Vector2i(0,0),sf::Vector2i(MAP_WIDTH,MAP_HEIGHT)));
+    Scene scene;
+
 
     //Player Initialize
     sf::Texture playerTexture;
     playerTexture.loadFromFile("images/tux_from_linux.png");
     Player player(&playerTexture,sf::Vector2u(3,9),PLAYER_ANIMATION_TIME,PLAYER_SPEED);
 
-    //Cloud Initialize
-    std::vector <Cloud> clouds;
 
-    sf::Texture textureCloud;
-    textureCloud.loadFromFile("images/cloud.png");  
-    for(int i=0; i<CLOUD_COUNT; i++){
-        clouds.push_back(Cloud(MAP_WIDTH));
-        clouds[i].setTexture(textureCloud);
-        clouds[i].setScale(1.5f,1.5f);
-    }
 
     HUD pauseText("           Paused\n Press P for Unpause\n");
     pauseText.setScale(1.f, 1.f);
@@ -113,12 +94,10 @@ int main()
 
         if(!paused){
 
-            for(int i=0; i<CLOUD_COUNT; i++){
-                clouds[i].cloudPosGen();
-                clouds[i].setPosition(clouds[i].xPos, clouds[i].yPos);
-            }
+            scene.update(deltaTime);
 
             scoreText.setString(std::to_string(player.score));
+            std::cout << player.score << std::endl;
             scoreText.setPosition((view.getCenter().x - (view.getSize().x / 2.0f)) + 10,
                      (view.getCenter().y - (view.getSize().y / 2.0f)) +10 ); 
             player.update(deltaTime);
@@ -132,14 +111,11 @@ int main()
 
         window.clear();
         window.setView(view);
-        window.draw(spriteBackground);
 
-        for(int i=0; i<CLOUD_COUNT; i++){
-            window.draw(clouds[i]);
-        }
-
+        scene.draw(&window);
         window.draw(scoreText);
         player.draw(&window);
+
         if(paused) window.draw(pauseText);
 
         window.display();
