@@ -3,6 +3,7 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include "animation.hpp"
+#include "collider.hpp"
 
 enum class directions{
     STEADY,
@@ -20,7 +21,8 @@ public:
     void update(float deltaTime);
     void draw(sf::RenderWindow* window);
     sf::Vector2f getPosition(){return body.getPosition();}
-    
+    Entity* getSprite(){return &body;}
+
 public :
 
     int direction;
@@ -29,9 +31,10 @@ public :
     int score = 0;
 
 
+
 private :
     Animation moveAnimation;
-    sf::Sprite body;
+    Entity body;
 
     float xPos;
     float yPos;

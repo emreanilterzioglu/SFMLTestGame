@@ -1,5 +1,4 @@
 #include "main.hpp"
-#include "player.hpp"
 #include "hud.hpp"
 #include "scene.hpp"
 
@@ -8,8 +7,6 @@ bool paused = true;
 static const float WINDOW_WIDTH = 1280.0f;
 static const float WINDOW_HEIGHT = 768.0f;
 
-static const float PLAYER_SPEED = 100.0f;
-static const float PLAYER_ANIMATION_TIME = 0.1f; //0.1 = 10fps
 
 
 void resizeView(sf::RenderWindow& window, sf::View& view){
@@ -29,24 +26,16 @@ int main()
 
     Scene scene;
 
-
-    //Player Initialize
-    sf::Texture playerTexture;
-    playerTexture.loadFromFile("images/tux_from_linux.png");
-    Player player(&playerTexture,sf::Vector2u(3,9),PLAYER_ANIMATION_TIME,PLAYER_SPEED);
-
-
-
     HUD pauseText("           Paused\n Press P for Unpause\n");
     pauseText.setScale(1.f, 1.f);
-    pauseText.setPosition((player.getPosition().x - 150),
-                        (player.getPosition().y - 150 ));
+    pauseText.setPosition((scene.getPlayerPosition().x - 150),
+                        (scene.getPlayerPosition().y - 150 ));
                         
-    HUD scoreText(std::to_string(player.score));
+    HUD scoreText(std::to_string(scene.getPlayerScore()));
     scoreText.setScale(1.5f, 1.5f);
-    scoreText.setString(std::to_string(player.score));
-    scoreText.setPosition((player.getPosition().x - 350),
-                        (player.getPosition().y - 350 ));
+    scoreText.setString(std::to_string(scene.getPlayerScore()));
+    scoreText.setPosition((scene.getPlayerPosition().x - 350),
+                        (scene.getPlayerPosition().y - 350 ));
 
 
     int32_t debounceCounter = 0;
@@ -96,25 +85,22 @@ int main()
 
             scene.update(deltaTime);
 
-            scoreText.setString(std::to_string(player.score));
-            std::cout << player.score << std::endl;
+            scoreText.setString(std::to_string(scene.getPlayerScore()));
             scoreText.setPosition((view.getCenter().x - (view.getSize().x / 2.0f)) + 10,
                      (view.getCenter().y - (view.getSize().y / 2.0f)) +10 ); 
-            player.update(deltaTime);
         
         }
         
 
 
 
-        view.setCenter(player.getPosition().x,player.getPosition().y-250);
+        view.setCenter(scene.getPlayerPosition().x,scene.getPlayerPosition().y-250);
 
         window.clear();
         window.setView(view);
 
         scene.draw(&window);
         window.draw(scoreText);
-        player.draw(&window);
 
         if(paused) window.draw(pauseText);
 

@@ -13,6 +13,9 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
     body.setOrigin((moveAnimation.uvRect.width/2.0f),(moveAnimation.uvRect.height/2.0f));
     body.setPosition(700,700);
 
+    body.canMove = true;
+    body.weight = 100.0f;
+    body.penetration = 0.0f;
 }
 
 void Player::draw(sf::RenderWindow* window){

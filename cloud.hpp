@@ -16,6 +16,7 @@ private:
 
 public :
 
+
 private:
     sf::Texture textureCloud;
     int activeWidth = 0;
